@@ -7,12 +7,6 @@ enum Colors {
   blue = "blue",
 }
 
-enum MaxColors {
-  red = 12,
-  green = 13,
-  blue = 14,
-}
-
 const readLineByLine = async () => {
   const fileStream = fs.createReadStream("input.txt");
 
@@ -29,37 +23,29 @@ const readLineByLine = async () => {
 };
 
 const getID = (line: string): number => {
-  const index = parseInt(line.match(/Game ([0-9]+)/g)[0].replace("Game ", ""));
   const game = line
     .replace(/Game ([0-9]+): /g, "")
     .replaceAll(" ", "")
     .replaceAll(";", ",")
     .split(",");
 
-  let res = index;
+  let red = 0;
+  let blue = 0;
+  let green = 0;
 
-  game.every((round) => {
+  game.forEach((round) => {
     if (round.indexOf(Colors.red) > 0) {
-      if (getCount(round) > MaxColors.red) {
-        res = 0;
-        return false;
-      }
+      red = getCount(round) > red ? getCount(round) : red;
     }
     if (round.indexOf(Colors.blue) > 0) {
-      if (getCount(round) > MaxColors.blue) {
-        res = 0;
-        return false;
-      }
+      blue = getCount(round) > blue ? getCount(round) : blue;
     }
     if (round.indexOf(Colors.green) > 0) {
-      if (getCount(round) > MaxColors.green) {
-        res = 0;
-        return false;
-      }
+      green = getCount(round) > green ? getCount(round) : green;
     }
-    return true;
   });
-  return res;
+
+  return red * blue * green;
 };
 
 const getCount = (line: string) => {
